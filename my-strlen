@@ -1,0 +1,22 @@
+//自定义函数计算字符串长度
+#include<stdio.h>
+int my_strlen(char*a)
+{
+	int i=0;
+	while(*a!='\0')
+	{
+		i++;
+		a++;
+	}
+	return i;
+}
+int main ()
+{
+	char arr[20];
+	int lun;
+	printf("please put a string \n");
+	scanf("%s",arr);
+	lun=my_strlen(arr);
+	printf("size of arr is:%d",lun);
+	return 0;
+}
