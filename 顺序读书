@@ -1,0 +1,19 @@
+//屏幕上输入一个数，按位次依次输出
+#include<stdio.h>
+void print(int n)
+{
+	if(n>9)
+	{
+		 print(n/10);
+	}
+	printf("%2d",n%10);
+}
+int main ()
+{
+	unsigned int n;
+	printf("请输入一个数:\n");
+	scanf("%d",&n);
+	print(n);
+	printf("\n");
+	return 0;
+}
