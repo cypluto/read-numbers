@@ -1,14 +1,11 @@
-//自定义函数计算字符串长度
+
+//编写函数不允许创建临时变量，求字符串长度
 #include<stdio.h>
 int my_strlen(char*a)
 {
-	int i=0;
-	while(*a!='\0')
-	{
-		i++;
-		a++;
-	}
-	return i;
+	if(*a!='\0')
+		return my_strlen(a+1)+1;
+	else return 0;
 }
 int main ()
 {
