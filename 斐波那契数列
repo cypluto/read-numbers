@@ -1,0 +1,30 @@
+#include<stdio.h>
+int Fib1(int n)//递归方法的斐波那契数列求法
+{
+	if(n>2)
+		return Fib1(n-2)+Fib1(n-1);
+	else return 1;
+
+}
+int Fib2(int n)//此函数更加迅速的能得到结果
+{
+	int a=1,b=1,c=1;
+	while(n>2)
+	{
+		c=a+b;
+		a=b;
+		b=c;
+		n--;
+}
+	return c;
+}
+int main ()
+{
+	int n;
+	int temporary;
+	printf("请输入要求斐波那契数列第几项\n");
+	scanf("%d",&n);
+	temporary=Fib1(n);//
+	printf("%d",temporary);
+	return 0;
+}
