@@ -1,0 +1,25 @@
+//汉诺塔问题
+#include<stdio.h>
+void move(int n,char A,char B,char C)
+{
+	int i=0;
+	if(n==1)
+				printf("%c---->%c ",A,C);
+	else 
+		{
+			move(n-1,A,C,B);
+			printf("%c---->%c ",A,C);
+			move(n-1,B,A,C);
+	}
+}
+int main ()
+{
+	int n;
+	printf("汉诺塔问题求解\n");
+	printf("请输入汉诺塔层数：\n");
+	scanf("%d",&n);
+	printf("步骤为：\n");
+	move(n,'A','B','C');
+	printf("\n");
+	return 0;
+}
