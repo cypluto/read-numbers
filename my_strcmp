@@ -1,0 +1,25 @@
+#include<stdio.h>
+#include<assert.h>
+int my_strcmp(const char* arr1, const char* arr2)
+{
+	assert(arr1 && arr2);//避免空地址的传入
+	while (*arr1 == *arr2)
+	{
+		if (*arr1 == '\0')
+			return 0;//意为：两字符串相等
+		arr1++;
+		arr2++;
+	}
+	if (*arr1 > *arr2)
+		return 1;//意为：第一个字符串更大
+	else
+		return -1;//意为：第二个字符串更大
+}
+int main()
+{
+	char arr1[] = "ab";
+	char arr2[] = "abc";
+	int ret= my_strcmp(arr1, arr2);
+		printf("ret=%d", ret);
+	return 0;
+}
