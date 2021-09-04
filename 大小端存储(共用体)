@@ -1,0 +1,21 @@
+//利用共用体判断大小端存储
+#include<stdio.h>
+int check()
+{
+	union Un
+	{
+		char c;
+		int i;
+	}n;
+	n.i = 1;
+	return n.c;
+}
+int main()
+{
+	int ret = check();
+	if (ret == 1)
+		printf("小端存储\n");
+	else
+		printf("大端存储\n");
+	return 0;
+}
