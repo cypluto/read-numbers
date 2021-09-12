@@ -6,7 +6,7 @@ void* my_memmove(void* dest, const void* src, size_t count)
 	void* ret=dest;
 	assert(dest != NULL);
 	assert(src != NULL);
-	if (dest < src)//从后向前拷贝
+	if (dest < src)//从前向后拷贝
 	{
 		while (count--)
 		{
@@ -15,7 +15,7 @@ void* my_memmove(void* dest, const void* src, size_t count)
 			++(char*)src;
 		}
 	}
-		else//从前向后拷贝
+		else//从后向前拷贝
 		{
 		while(count--)
 			*((char*)dest + count) = *((char*)src + count);
