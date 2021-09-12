@@ -9,9 +9,10 @@ void bubble_sort(int arr[],int sz)
 		int j;
 		for(j=0;j<sz-1-i;j++)
 		{
-			flag=0;//证明如今数组不是有序
+			
 			if(arr[j]>arr[j+1])
 			{
+			        flag=0;//证明如今数组不是有序
 				int tem=arr[j];
 				arr[j]=arr[j+1];
 				arr[j+1]=tem;
