@@ -1,0 +1,17 @@
+#include<stdio.h>
+#include<CoreWindow.h>//用到windows系统的一些资源
+
+int main()
+{
+	//顶层窗口 FindWindow
+	//子窗口 FindwindowEX
+	//定义一个窗口句柄
+	HWND hwnd = FindWindow(NULL, L"狗俊杰");
+	for (int i = 0; i < 5; i++)
+	{
+		SendMessage(hwnd, WM_PASTE, 0, 0);//往一个窗口发送指令
+		SendMessage(hwnd, WM_KEYDOWN, VK_RETURN, 0);
+	}
+	
+	return 0;
+}
