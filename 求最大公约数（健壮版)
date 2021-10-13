@@ -1,0 +1,53 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+/*求两个正整数的最大公约数。编写求最大公约数的函数Gcd()，主函数中输入任意两个整数，
+调用此函数求最大公约数并输出结果。
+要求函数原型为：int Gcd(int a, int b)，a、b为输入的任意两个整数，
+当a或b为0或负数时，函数返回值为-1，否则返回a、b的最大公约数。*/
+//求最大公约数
+int Gcd(int a, int b)
+{
+	int temp,r;
+	if (a * b <= 0)
+	{
+		return -1;
+	}
+	if (a < b)
+	{
+		temp = a;
+		a = b;
+		b = temp;
+	}
+	r = a % b;
+	while (r!=0)
+	{
+		a = b;
+		b = r;
+		r = a % b;
+	}
+	return b;
+	
+}
+int main()
+{
+	int i, a, b,ret;
+	double x, y;
+	there:do {
+		printf("请输入两个大于零的整数整数：");
+		i = scanf("%lf%lf", &x, &y);//用i==2控制输入的不是符号
+		getchar();
+	} while (i != 2);
+	if (floor(x) != x && floor(y) != y)//floor向下取整，用来判断输入的不是小数
+	{
+		goto there;
+	}
+	a = x; b = y;
+	ret = Gcd(a, b);
+	if (ret == -1)//判断输入的不是负数
+	{
+		goto there;
+	}
+	printf("最大公约数为：%d", Gcd(a, b));
+	return 0;
+}
