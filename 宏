@@ -1,0 +1,13 @@
+#define _CRT_SECURE_NO_DEPRECATE
+#include<stdio.h>
+#include<stdlib.h>
+#define PRINT(X) printf("the value of "#X" is %d\n",X)//使用#，把一个宏参数变成对应的字符串
+#define CAT(X,Y) X##Y//##可以吧位于它两边的符号合成一个符号，它允许宏定义从分离的文本片段创建标识符
+int main(void)
+{
+    int a = 10;
+    int b = 20;
+    int data10 = 2021;
+    printf("%d", CAT(data, 10));
+    return 0;
+}
