@@ -1,0 +1,34 @@
+ #define _CRT_SECURE_NO_DEPRECATE
+#include<iostream>
+using namespace std;
+//左移运算符的重载
+//不采用通过成员函数重载是因为无法实现cout在左侧：像正常状态的那种输出
+class Person
+{
+	//保证能够在全局函数中访问到Person类的成员变量
+	friend ostream& operator<<(ostream& cout, Person& p);
+	friend void test01();
+private:
+	
+	int m_A;
+	int m_B;
+
+};
+
+ostream& operator<<(ostream& cout, Person& p)//cout属于ostream输出流
+{
+	cout << "m_A=" << p.m_A << " m_B=" << p.m_B <<" ";
+	return cout;//返回输出流cout保证test01()中的cout后面可以继续添加输出元素
+}
+void test01()
+{
+	Person p;
+	p.m_A = 10;
+	p.m_B = 10;
+	cout << p << "hello world"<<endl;
+}
+int main()
+{
+	test01();
+	return 0;
+}
