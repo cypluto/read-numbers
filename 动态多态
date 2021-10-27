@@ -9,7 +9,7 @@ class Animal
 {
 public:
 	//虚函数
-	virtual void speaak()
+	virtual void speak()
 	{
 		cout << "动物在说话" << endl;
 	}
@@ -39,7 +39,7 @@ public:
 void doSpeak(Animal& animal)//Animal&animal=cat
 //C++中允许父子之间类型转换
 {
-	animal.speaak();
+	animal.speak();
 }
 void test01()
 {
