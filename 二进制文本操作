@@ -1,0 +1,66 @@
+#include<iostream>
+#include<fstream>//进行文件操作需包含的头文件
+using namespace std;
+
+class Person
+{
+public:
+
+	char m_Name[64];//建议不要用C++的string
+	int m_Age;
+};
+
+//二进制文件 写文件
+void test01()
+{
+	//1、包含头文件
+
+	//2、创建流对象
+	ofstream ofs;
+
+	//3、打开文件
+	ofs.open("Person.txt", ios::out | ios::binary);
+
+	//4、写文件
+	Person p = { "张三",18 };//二进制文件可以写自定义类型
+	ofs.write((const char*)&p, sizeof(Person));//形参是const char*强制类型转换，第二个形参是数据类型所占字节数
+
+	//5、关闭文件
+	ofs.close();
+}
+
+//二进制文件 读文件
+void test02()
+{
+	//1、包含头文件
+
+	//2、创建流对象
+	ifstream ifs;
+
+	//3、打开文件 判断文件是否打开成功
+	ifs.open("Person.txt", ios::in | ios::binary);
+
+	if (!ifs.is_open())
+	{
+		cout << "打开文件按失败" << endl;
+		return;
+	}
+
+	//4、读文件
+	Person p;
+
+	ifs.read((char*)&p, sizeof(Person));//传入接受数据的地址并强制类型转化为char*
+
+	cout << "姓名：" << p.m_Name << "年龄：" << p.m_Age << endl;
+
+	//5、关闭文件
+	ifs.close();
+}
+int main()
+{
+	test01();
+	test02();
+	system("pause");
+	return 0;
+}
+
