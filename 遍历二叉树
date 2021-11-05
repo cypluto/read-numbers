@@ -1,0 +1,222 @@
+#include<iostream>
+#include<stack>
+
+using namespace std;
+
+#define TelemType char
+#define none '#'//结束标识符
+#define OK 1
+#define ERROR 0
+#define MAXSIZE 20
+
+//创建储存二叉树节点的结构体
+typedef struct BiTree
+{
+	TelemType data;
+	struct BiTree* left, * right;//left指向左子树，right指向右子树
+}Binode, * Bitree;
+
+//按先序方式创建二叉树
+int CreatBiTree(Bitree& T)
+{
+	TelemType ch;
+	cin >> ch;
+	if (ch == none)//输入标识符表示节点为叶
+	{
+		T = nullptr;
+	}
+	else
+	{
+		T = new Binode;//动态开辟节点内存
+
+		T->data = ch;
+
+		CreatBiTree(T->left);
+		CreatBiTree(T->right);
+	}
+	return OK;
+}
+
+//遍历时需要进行的操作
+void visit(Bitree T)
+{
+	cout << T->data<<"  ";
+}
+
+//按先序非递归方式遍历二叉树
+int preOrderTraverse(Bitree T)
+{
+	stack<Bitree> s;
+	Bitree p;
+	p = T;
+	while (!s.empty() || p)
+	{
+		if (p)
+		{
+			visit(p);
+			s.push(p);
+			p = p->left;
+		}
+		else
+		{
+			p = s.top();//返回上一个节点
+			s.pop();
+			p = p->right;
+		}
+	}
+	return OK;
+}
+
+//按中序非递归方式遍历二叉树
+int inOrderTraverse(Bitree T)
+{
+	stack<Bitree> s;
+	Bitree p=T;
+
+	while (!s.empty() || p)
+	{
+		if (p)
+		{
+			s.push(p);
+			p = p->left;
+		}
+		else
+		{
+			p = s.top();
+			s.pop();
+			visit(p);
+			p = p->right;
+		}
+	}
+	return OK;
+}
+
+//按后序非递归方式遍历二叉树
+int postOrderTraverse1(Bitree T)
+{
+	stack<Bitree>s;
+	Bitree p;
+	Bitree last;//记录最后一个节点作为标志
+	last = p = T;
+	s.push(p);
+	while (!s.empty())
+	{
+		p = s.top();
+		if ((p->left == nullptr && p->right == nullptr)//节点为叶
+			|| (p->left == last && p->right == nullptr)//左子树遍历完无右子树
+			|| (p->right == last)//左右子树遍历完
+			)
+		{
+			visit(p);
+			s.pop();
+			last = p;
+		}
+		else
+		{
+			if(p->right)
+				s.push(p->right);
+			if(p->left)
+				s.push(p->left);
+		}
+	}
+	return OK;
+}
+
+//层次遍历
+//构建循环队列以及基本操作
+typedef struct
+{
+	Bitree* data;//数据域
+	int front;//队头
+	int rear;//队尾
+}SqQueue;
+
+//初始化队列
+int initiQueue(SqQueue& Q)
+{
+	Q.data = new Bitree[MAXSIZE];
+	if (!Q.data)
+	{
+		exit(-1);
+	}
+	Q.front = Q.rear = 0;
+	return OK;
+} 
+
+//入队
+int queue(SqQueue& Q,Bitree p)
+{
+	if ((Q.rear + 1) % MAXSIZE == Q.front)
+	{
+		return ERROR;
+	}
+	else
+	{
+		Q.data[Q.rear] = p;
+		Q.rear = (Q.rear + 1) % MAXSIZE;
+		return OK;
+	}
+}
+
+//出队
+Bitree Lqueue(SqQueue& Q)
+{
+	Bitree temp= Q.data[Q.front];
+	Q.front = (Q.front + 1) % MAXSIZE;
+	return temp;
+}
+
+//判断队空
+int judgeQueue(SqQueue& Q)
+{
+	if (Q.front == Q.rear)
+		return ERROR;
+	else
+		return OK;
+}
+
+//层次遍历
+int SequenceTraversal(Bitree T)
+{
+	Bitree p;
+	SqQueue Q;
+
+	initiQueue(Q);
+	p = T;
+
+	queue(Q, p);
+	while (judgeQueue(Q))
+	{
+		p = Lqueue(Q);
+		visit(p);
+	if(p->left)
+		queue(Q, p->left);
+		
+	if(p->right)
+		queue(Q, p->right);
+	}
+	return OK;
+}
+
+
+int main()
+{
+	Bitree bt;
+
+	CreatBiTree(bt);
+	cout << "按先序非递归方式遍历二叉树：" << endl;
+	preOrderTraverse(bt);
+	cout << endl;
+	cout << "按中序非递归方式遍历二叉树：" << endl;
+	inOrderTraverse(bt);
+	cout << endl;
+	cout << "按后序非递归方式遍历二叉树：" << endl;
+	postOrderTraverse1(bt);
+	cout << endl;
+	cout << "按层序非递归方式遍历二叉树：" << endl;
+	SequenceTraversal(bt);
+	cout << endl;
+
+	system("pause");
+	return 0;
+}
