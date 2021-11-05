@@ -1,0 +1,177 @@
+#include<iostream>
+#include<stack>
+#include<cmath>
+
+using namespace std;
+
+#define TelemType char
+#define none '#'//结束标识符
+#define OK 1
+#define ERROR 0
+#define MAXSIZE 20
+#define ROW 100//最大行
+#define COL 100//最大列
+
+//创建储存二叉树节点的结构体
+typedef struct BiTree
+{
+	TelemType data;
+	struct BiTree* left, * right;//left指向左子树，right指向右子树
+}Binode, * Bitree;
+
+//按先序方式创建二叉树
+int CreatBiTree(Bitree& T)
+{
+	TelemType ch;
+	cin >> ch;
+	if (ch == none)//输入标识符表示节点为叶
+	{
+		T = nullptr;
+	}
+	else
+	{
+		T = new Binode;//动态开辟节点内存
+
+		T->data = ch;
+
+		CreatBiTree(T->left);
+		CreatBiTree(T->right);
+	}
+	return OK;
+}
+
+//层次遍历
+//构建循环队列以及基本操作
+typedef struct
+{
+	Bitree* data;//数据域
+	int front;//队头
+	int rear;//队尾
+}SqQueue;
+
+//初始化队列
+int initiQueue(SqQueue& Q)
+{
+	Q.data = new Bitree[MAXSIZE];
+	if (!Q.data)
+	{
+		exit(-1);
+	}
+	Q.front = Q.rear = 0;
+	return OK;
+}
+
+//入队
+int queue(SqQueue& Q, Bitree p)
+{
+	if ((Q.rear + 1) % MAXSIZE == Q.front)
+	{
+		return ERROR;
+	}
+	else
+	{
+		Q.data[Q.rear] = p;
+		Q.rear = (Q.rear + 1) % MAXSIZE;
+		return OK;
+	}
+}
+
+//出队
+Bitree Lqueue(SqQueue& Q)
+{
+	Bitree temp = Q.data[Q.front];
+	Q.front = (Q.front + 1) % MAXSIZE;
+	return temp;
+}
+
+//判断队空
+int judgeQueue(SqQueue& Q)
+{
+	if (Q.front == Q.rear)
+		return ERROR;
+	else
+		return OK;
+}
+
+//查找二叉树的深度
+int deep(Bitree& T)
+{
+	if(!T)
+	return 0;
+	else
+	{
+		int i=0, j=0;
+		i = deep(T->left)+1;
+		j = deep(T->right)+1;
+		return (i > j ? i : j);
+	}
+}
+
+//将树节点中的数据存入二维数组中的某特定位置通过打印二维数组实现二叉树的可视化
+char BT[ROW][COL] ;
+
+//初始化二维数组
+void Init(char BT[][COL])
+{
+	int i, j;
+	for (int i = 0; i < ROW; i++)
+		for (int j = 0; j < COL; j++)
+			BT[i][j] = ' ';
+}
+
+//打印二叉树
+void print(Bitree& T,int X,int Y,int N)
+{
+	int width;
+	if (!T)
+		return;
+	else
+	{
+		BT[X][Y] = T->data;
+		N--;
+		if (T->left || T->right)
+		BT[X+1][Y] = '|';
+		width = pow(2, N - 1) + pow(2, N - 2);
+		if (T->left)
+		{
+			for (int i = 1; i <= width; i++)
+				BT[X+1][Y-i] = '_';
+			BT[X+2][Y-width] = '|';
+			print(T->left, X+3, Y-width, N);
+
+		}
+		if (T->right)
+		{
+			for (int i = 1; i <=width; i++)
+				BT[X+1][Y + i] = '_';
+			BT[X+2][Y + width] = '|';
+			print(T->right, X+3, Y + width, N);
+
+		}
+	}
+}
+
+int main()
+{
+	Init(BT);
+	Bitree bt;
+
+	CreatBiTree(bt);
+
+	int N = deep(bt);
+	int Y = pow(2, N - 1) + pow(2, N - 2);
+	int X = 0;
+	int Length = pow(2,N)+pow(2,N-1)-1;
+	int Width = (N - 1) * 3+1;
+
+	print(bt, X, Y, N);
+	
+	for (int i = 0; i < Width; i++)
+	{
+		for (int j = 0; j < Length; j++)
+			cout << BT[i][j];
+		cout << endl;
+	}
+	system("pause");
+	return 0;
+}
