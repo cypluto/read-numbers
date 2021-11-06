@@ -1,0 +1,68 @@
+//最大回文数
+//虽然该算法时间复杂度较高，我花了四个小时把他搞出来的还是纪念一下
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+#define MAXSIZE 100
+
+int BT[MAXSIZE];
+int num = 0;
+
+int check(char arr[], int n)
+{
+	int i=0;
+	for ( i = 0; i < n-1 ; i++)
+	{
+		if (arr[0] != arr[n-1-i])
+			continue;
+		else
+		{
+			char arr2[MAXSIZE] = { };
+			for (int  k = 0; k < n - i - 2; k++)
+			{
+				arr2[k] = arr[k + 1];
+			}
+			if ((n - i - 2) == 0)
+				return 2;
+			int X = check(arr2, n - i - 2) + 2;
+			if (arr[0] == arr[n - 1])
+				return X;
+			else
+			{
+
+				char arr3[MAXSIZE] = { };
+
+				for (int k = 0; k < n - 1; k++)
+				{
+					arr3[k] = arr[k + 1];
+				}
+				int Y = check(arr3, n - 1);
+
+				return (X > Y ? X : Y);
+			}
+		}
+	}
+	
+		if (n == 1)
+			return 1;
+		else
+		{
+			char arr1[MAXSIZE] = { };
+			for (int k = 0; k < i ; k++)
+				arr1[k] = arr[k + 1];
+			return check(arr1, i );
+		}
+}
+int main()
+{
+	int max=0;
+	char arr[MAXSIZE];
+	cin >> arr;
+	int n = strlen(arr);
+    int ret=check(arr, n);
+	cout << n-ret << endl;
+	system("pause");
+	return 0;
+}
