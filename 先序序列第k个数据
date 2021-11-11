@@ -1,0 +1,90 @@
+//编写递归算法，在二叉树中求位于先序序列中第k个位置的结点的值。
+#include<iostream>
+#include<stack>
+
+using namespace std;
+
+#define TelemType char
+#define none '#'//结束标识符
+#define OK 1
+#define ERROR 0
+#define MAXSIZE 20
+
+
+
+//创建储存二叉树节点的结构体
+typedef struct BiTree
+{
+	TelemType data;
+	struct BiTree* left, * right;//left指向左子树，right指向右子树
+}Binode, * Bitree;
+
+//按先序方式创建二叉树
+int CreatBiTree(Bitree& T)
+{
+	TelemType ch;
+	cin >> ch;
+	if (ch == none)//输入标识符表示节点为叶
+	{
+		T = nullptr;
+	}
+	else
+	{
+		T = new Binode;//动态开辟节点内存
+
+		T->data = ch;
+
+		CreatBiTree(T->left);
+		CreatBiTree(T->right);
+	}
+	return OK;
+}
+int i = 1;//定义全局变量用来判断当前节点位置
+TelemType Data = 0;//存储k位置的数据
+//递归查找先序序列第k个位置的结点的值
+void  RecursiveSearch(Bitree T,int k)
+{
+	if (!T)
+		return;
+
+		if (k == i)
+			Data = T->data;
+		else
+		{
+			
+			if (T->left)
+			{
+				i++;
+				RecursiveSearch(T->left, k);
+			}
+			if (T->right)
+			{
+				i++;
+				RecursiveSearch(T->right, k);
+			}
+				
+		}
+
+	return;
+}
+
+int main()
+{
+	Bitree bt;
+	int k;
+
+	cout << "按先序序列输入数据：";
+	CreatBiTree(bt);
+
+	cout << "请输入要查找数据的位置：";
+	cin >> k;
+
+	RecursiveSearch(bt, k);
+
+	if (i < k)
+		cout << "未查到该位置数据，检查是否输入位置不在该序列范围内" << endl;
+	else
+		cout << "该位置数据为：" << Data << endl;
+	system("pause");
+	return 0;
+}
