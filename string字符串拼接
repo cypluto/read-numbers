@@ -1,0 +1,42 @@
+#include<iostream>
+#include<string>
+#include<algorithm>
+
+using namespace std;
+
+//string字符串拼接
+void test01()
+{
+	string str1 = "我爱";
+	str1 += "玩游戏 ";
+	//我爱玩游戏
+	cout << "str1=" << str1 << endl;
+
+	str1 += ':';
+	//我爱玩游戏：
+	cout << "str1=" << str1 << endl;
+
+	string str2 = "LOL COC";
+	str1 += str2;
+	//我爱玩游戏：LOL COC
+	cout << "str1=" << str1 << endl;
+
+	string str3 = "I";
+	str3.append(" love");
+	//I love
+	cout << "str3=" << str3 << endl;
+
+	str3.append(" game ahsajc", 5);//只添加前四个字符
+	//I love game
+	cout << "str3=" << str3 << endl;
+
+	str3.append(str2, 3, 6);//第二个参数是添加的起始位置（从0开始），第三个参数是添加的结束位置
+	//I love game COC
+	cout << "str3=" << str3 << endl;
+}
+int main()
+{
+	test01();
+	system("pause");
+	return 0;
+}
