@@ -1,0 +1,41 @@
+#include<iostream>
+#include<string>
+#include<algorithm>
+
+using namespace std;
+
+//string查找和替换
+
+//1、查找
+void test01()
+{
+	string str1 = "abcdefg";
+
+	int pos = str1.find("de");//函数原型：int find(const&str,int pos=0)const;
+							  //查找str第一次出现的位置从pos开始查找，找到返回位置未找到返回-
+	//int rfind(const&str,int pos=0)const;
+	//rfind函数从右往左查找，find从左往右查找
+	if (pos == -1)//未找到字符串返回-1
+	{
+		cout << "未找到字符串" << endl;
+	}
+	else
+	{
+		cout << "pos=" << pos << endl;
+	}
+}
+
+//2、替换
+void test02()
+{
+	string str1 = "abcdefg";
+	str1.replace(1, 3, "1111");//从1位置起3个字符替换成"1111"
+	cout << "str1=" << str1 << endl;
+}
+int main()
+{
+	test01();
+	test02();
+	system("pause");
+	return 0;
+}
