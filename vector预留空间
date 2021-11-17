@@ -1,0 +1,50 @@
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+//vector预留空间
+//函数原型：reserve(int len);//容器预留len个元素长度，预留位置不初始化，元素不可访问
+
+void test01()
+{
+	vector<int>v;
+	vector<int>v1;
+
+	int num = 0;//统计开辟次数
+	int* p = NULL;
+	for (int i = 0; i < 100000; i++)
+	{
+		v.push_back(i);
+
+		if (p != &v[0])
+		{
+			p = &v[0];
+			num++;
+		}
+	}
+
+	cout << "一共进行了" << num << "次内存开辟操作" << endl;
+
+	//利用reserve预留空间
+	v1.reserve(100000);
+
+	num = 0;
+	for (int i = 0; i < 100000; i++)
+	{
+		v1.push_back(i);
+
+		if (p != &v1[0])
+		{
+			p = &v1[0];
+			num++;
+		}
+	}
+	cout << "一共进行了" << num << "次内存开辟操作" << endl;
+}
+int main()
+{
+	test01();
+	system("pause");
+	return 0;
+}
