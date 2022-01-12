@@ -1,0 +1,225 @@
+#include<stdio.h>
+#include<graphics.h>//easyx图形库
+#include<math.h>
+#include<conio.h>
+#include<mmsystem.h>//播放音乐头文件
+#include<time.h>
+#pragma comment(lib,"winmm.lib")//多媒体设备接口库文件
+
+#define pi 3.1415
+#define NUM 13
+#define WIDTH 960
+#define HEIGHT 640
+
+struct Fire
+{
+	int x, y;              //绽放烟花的坐标
+	int cen_x, cen_y;;     //中心点坐标
+	int r;                 //当前绽放半径
+	int max_r;             //最大绽放半径
+	int width, height;
+	DWORD pixel[240][240]; //图片像素数组
+	bool isShow;           //烟花是否准备好绽放
+	bool isDraw;           //是否绘制烟花
+}fire[NUM];
+
+struct Jet//烟花弹的结构
+{
+	int x, y;//烟花弹的坐标
+	int hx, hy;//最高点坐标
+	bool isLaunch;//烟花弹是否在发射中
+	IMAGE img[2];//存放烟花一明一暗的两种状态，实现烟花发射过程中的闪烁
+	byte n : 1;//位段
+}jet[NUM];
+//开始界面
+void welcome()
+{
+	mciSendString(L"open 小幸运.mp3", 0, 0, 0);//将音乐加载进程序
+	mciSendString(L"play 小幸运.mp3", 0, 0, 0);//播放音乐
+
+
+	for (int i = 0; i < 50; ++i)
+	{
+		//清屏
+		cleardevice();
+		int x = 500 + 180 * sin(2 * pi / 60 * i);
+		int y = 200 + 180 * cos(2 * pi / 60 * i);
+		//设置字体样式
+		settextstyle(i, 0, L"楷体");
+		//设置字体颜色
+		settextcolor(RGB(200, 180, 600));//三个参数分别为红绿蓝三原色的比例
+		//设置文字背景
+		setbkmode(TRANSPARENT);
+		//图形窗口的输出
+		outtextxy(x, y, L"我来了我来了");//前两个参数是输出位置x，y，第三个是输出文字
+		//延时20ms
+		Sleep(20);
+	}
+	//按任意键继续
+	_getch();
+	//清屏
+	cleardevice();
+	//设置字体样式
+	settextstyle(20, 0, L"宋体");
+	outtextxy(350, 100, L"啦啦啦啦啦啦");
+	outtextxy(350, 150, L"啦啦啦啦啦啦");
+	outtextxy(350, 200, L"啦啦啦啦啦啦");
+	outtextxy(350, 250, L"啦啦啦啦啦啦");
+	outtextxy(350, 300, L"啦啦啦啦啦啦");
+	outtextxy(350, 350, L"啦啦啦啦啦啦");
+	Sleep(2000);
+	cleardevice();
+}
+void InitData(int i)
+{
+	fire[i].cen_x = 120;
+	fire[i].cen_y = 120;
+	fire[i].max_r = 120;
+	fire[i].r = 0;
+	fire[i].width = 240;
+	fire[i].height = 240;
+	fire[i].isDraw = false;
+	fire[i].isShow = false;
+}
+//初始化数据
+void loadImg()
+{
+	//初始化绽放烟花
+	IMAGE bloomImg,tImg;
+	loadimage(&bloomImg,L"flower.jpg", 3120, 240);
+	for (int i = 0; i < NUM; i++)
+	{
+		InitData(i);
+		SetWorkingImage(&bloomImg);
+		getimage(&tImg,i*240,0,240,240);
+		SetWorkingImage(&tImg);
+		for (int a = 0; a < 240; a++)
+		{
+			for (int b = 0; b < 240; b++)
+			{
+				fire[i].pixel[a][b] = getpixel(a,b);
+			}
+		}
+	}
+	IMAGE jetImg;//定义一个图片
+	loadimage(&jetImg, L"launch.jpg", 200, 50);//加载图片
+	SetWorkingImage(&jetImg);//进行操作的图片地址
+	//初始化
+	for (int i = 0; i < NUM; i++)
+	{
+		int n = rand() % 5;
+		//获取图片（获取单个烟花）
+		getimage(&jet[i].img[0], n*20, 0, 20, 50);
+		getimage(&jet[i].img[1], n*20 + 100, 0, 20, 50);
+		jet[i].isLaunch = false;
+	}
+	SetWorkingImage();
+}
+//产生烟花弹
+void createJet()
+{
+	int i = rand() % NUM;//[0~13)
+	if (jet[i].isLaunch == false)//没有发射
+	{
+		jet[i].x = rand() % (WIDTH-20);
+		jet[i].y = rand() % 100 + HEIGHT ;
+		jet[i].hx = jet[i].x;
+		jet[i].hy= rand() % (HEIGHT / 2);
+		jet[i].isLaunch = true;
+	}
+}
+//发射烟花弹
+void launch()
+{
+	for (int i = 0; i < NUM; i++)
+	{
+		if (jet[i].isLaunch)
+		{
+			putimage(jet[i].x, jet[i].y, &jet[i].img[jet[i].n],SRCINVERT);//SRCINVERT去除轨迹
+			//判断是否达到最高点
+			if (jet[i].y > jet[i].hy)
+			{
+				jet[i].y -= 4;
+				jet[i].n++;
+			}
+			putimage(jet[i].x, jet[i].y, &jet[i].img[jet[i].n], SRCINVERT);//SRCINVERT去除轨迹
+			if (jet[i].y <= jet[i].hy)
+			{
+				jet[i].isLaunch = false;
+				//可以开始放烟花了
+				fire[i].x = jet[i].x;
+				fire[i].y = jet[i].y;
+				fire[i].isShow = true;
+			}
+		}
+	}
+}
+void bloom(DWORD* pMem)
+{
+	for (int i = 0; i < NUM; i++)
+	{
+		if (fire[i].isShow)
+		{
+			if (fire[i].r < fire[i].max_r)
+			{
+				fire[i].r++;
+				fire[i].isDraw = true;//可以开始绘制烟花了
+			}
+			if (fire[i].r >= fire[i].max_r)
+			{
+				//结束
+				InitData(i);
+			}
+		}
+		if (fire[i].isDraw)
+		{
+			//求当前半径下，圆上的每个点对应的弧度
+			for (double a = 0; a <= 2 * pi; a += 0.01)
+			{
+				int img_x = fire[i].cen_x + fire[i].r * cos(a);
+				int img_y = fire[i].cen_y + fire[i].r * sin(a);
+				if (img_x > 0 && img_x < fire[i].width && img_y>0 && img_y < fire[i].height)
+				{
+					//针对现在的绽放点，对应的屏幕坐标
+					int win_x = fire[i].x + fire[i].r * cos(a);
+					int win_y = fire[i].y + fire[i].r * sin(a);
+					if (win_x > 0 && win_x < WIDTH && win_y>0 && win_y < WIDTH)
+					{
+						pMem[win_y * WIDTH + win_x] = BGR(fire[i].pixel[img_x][img_y]);
+					}
+				}
+			}
+		}
+	}
+}
+int main()
+{
+	//创建窗口
+	initgraph(960, 640);//参数为窗口大小
+	//设置随机数种子
+	srand((unsigned)time(NULL)+clock());
+	welcome();
+	loadImg();
+	DWORD* pMem = GetImageBuffer();//获取窗口的内存指针
+	while (1)//保持窗口防止闪退
+	{
+		for (int i = 0; i < WIDTH; i++)
+		{
+			for (int k = 0; k < 35; k++)
+			{
+				int x = rand() % WIDTH;
+				int y = rand() % HEIGHT;
+				if (y < HEIGHT)
+				{
+					pMem[y * WIDTH + x] = BLACK;
+				}
+			}
+		}
+		createJet();
+		launch();
+		bloom(pMem);
+		Sleep(45);
+	}
+	closegraph();//关闭窗口
+	return 0;
+}
